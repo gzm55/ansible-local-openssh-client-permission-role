@@ -1,0 +1,29 @@
+galaxy_info:
+  author: James Z.M. Gao
+  description: fix permissions of local openssh client config files
+
+  license: BSD
+
+  min_ansible_version: 2.0
+
+  platforms:
+  - name: GenericBSD
+    versions:
+    - any
+  - name: GenericLinux
+    versions:
+    - any
+  - name: Windows
+    versions:
+    - all
+  - name: GenericUNIX
+    versions:
+    - any
+
+  galaxy_tags: [system, network]
+
+allow_duplicates: yes
+dependencies:
+- { role: gzm55.require_implicity_localhost }
+- { role: gzm55.require_disabe_become }
+- { role: gzm55.local_id_plugin }

@@ -1,0 +1,5 @@
+---
+- hosts: testserver
+  gather_facts: False
+  roles:
+  - role: ansible-local-openssh-client-permission-role

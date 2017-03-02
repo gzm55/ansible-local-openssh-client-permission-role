@@ -1,0 +1,75 @@
+---
+language: python
+python: "2.7"
+
+sudo: required
+
+# Use the docker for testing
+services:
+  - docker
+
+# Install ansible
+addons:
+  apt:
+    packages:
+    - python-pip
+
+install:
+  # Install ansible
+  - pip install ansible
+
+  # Check ansible version
+  - ansible --version
+
+  # Install python module and role dependencies
+  - test -f requirements.txt && pip install -r requirements.txt
+  - test -f requirements.yml && ansible-galaxy install -p tests/roles -r requirements.yml
+
+  # Create ansible.cfg with correct roles_path
+  - printf '[defaults]\nroles_path=../' >ansible.cfg
+
+  # Start a sshd container for testing
+  # - listen on localhost:4848
+  # - enable root login
+  # - root login via pubkey
+  - docker pull danielguerra/alpine-sshd
+  - docker rm -f alpine-sshd || true
+  - docker run -p 4848:22 --name alpine-sshd --hostname alpine-sshd -d danielguerra/alpine-sshd sh -c 'echo "PermitRootLogin yes" >> /etc/ssh/sshd_config && exec /usr/sbin/sshd -D'
+  - ssh-keygen -N '' -f ~/.ssh/id_rsa
+  - cat ~/.ssh/id_rsa.pub | docker exec -i alpine-sshd sh -c 'cd; umask 077; mkdir -p .ssh; cat >> .ssh/authorized_keys'
+  - ssh-keygen -f ~/.ssh/known_hosts -R [localhost]:4848 || true
+  - sleep 1 && ssh-keyscan -p 4848 localhost >> ~/.ssh/known_hosts
+  - ssh -p 4848 root@localhost true
+
+script:
+  # Basic role syntax check
+  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+
+  # invalid mode for ~/.ssh/config
+  - touch ~/.ssh/config && chmod 644 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - true && ! ssh -p 4848 root@localhost true
+  - ansible-playbook tests/test.yml -i tests/inventory
+  - ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - ssh -p 4848 root@localhost true
+
+  # invalid mode for ~/.ssh
+  - chmod 755 ~/.ssh && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - true && ! ssh -p 4848 root@localhost true
+  - ansible-playbook tests/test.yml -i tests/inventory
+  - ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - ssh -p 4848 root@localhost true
+
+  # reference
+  - mkdir ~/.config && mv ~/.ssh ~/.config/ssh && ln -s .config/ssh ~/.ssh
+  - touch ~/.ssh/config && chmod 644 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - true && ! ssh -p 4848 root@localhost true
+  - ansible-playbook tests/test.yml -i tests/inventory
+  - ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - ssh -p 4848 root@localhost true
+
+  # no ~/.ssh dir
+  - rm -rf ~/.ssh
+  - ansible-playbook tests/test.yml -i tests/inventory
+
+#notifications:
+  #webhooks: https://galaxy.ansible.com/api/v1/notifications/

@@ -1,0 +1,30 @@
+---
+- block:
+  - name: ~/.ssh/ should be mode 0700
+    file:
+      path: "{{ '~/.ssh' | expanduser | realpath }}"
+      owner: "{{ lookup('id', 'euname') }}"
+      mode: 'u=rwx,g=,o='
+
+  - name: ~/.ssh/config must be mode 0600
+    when:
+    - ( '~/.ssh/config' | expanduser | exists )
+    - ( '~/.ssh/config' | expanduser | realpath | exists )
+    - ( '~/.ssh/config' | expanduser | realpath | is_file )
+    file:
+      path: "{{ '~/.ssh/config' | expanduser | realpath }}"
+      owner: "{{ lookup('id', 'euname') }}"
+      mode: 'u=rw,g=,o='
+
+  run_once: True
+  delegate_to: localhost
+  become: False
+  become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
+  vars:
+  - ansible_become: False
+  - ansible_become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
+  when:
+  - ([ hostvars[inventory_hostname].ansible_connection | d('smart') ]) | intersect(['ssh', 'smart']) | list | length == 1
+  - ( '~/.ssh' | expanduser | exists )
+  - ( '~/.ssh' | expanduser | realpath | exists )
+  - ( '~/.ssh' | expanduser | realpath | is_dir )
