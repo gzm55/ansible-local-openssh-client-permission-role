@@ -56,14 +56,13 @@ script:
 
   # invalid mode for ~/.ssh
   - chmod 755 ~/.ssh && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
-  - true && ! ssh -p 4848 root@localhost true
   - ansible-playbook tests/test.yml -i tests/inventory
   - ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
   - ssh -p 4848 root@localhost true
 
   # reference
   - mkdir -p ~/.config && mv ~/.ssh ~/.config/ssh && ln -s .config/ssh ~/.ssh
-  - touch ~/.ssh/config && chmod 666 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - touch ~/.ssh/config && chmod 622 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
   - true && ! ssh -p 4848 root@localhost true
   - ansible-playbook tests/test.yml -i tests/inventory
   - ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
