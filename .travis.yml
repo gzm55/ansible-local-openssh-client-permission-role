@@ -48,7 +48,7 @@ script:
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
 
   # invalid mode for ~/.ssh/config
-  - touch ~/.ssh/config && chmod 644 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - touch ~/.ssh/config && chmod 666 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
   - true && ! ssh -p 4848 root@localhost true
   - ansible-playbook tests/test.yml -i tests/inventory
   - ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
@@ -62,8 +62,8 @@ script:
   - ssh -p 4848 root@localhost true
 
   # reference
-  - mkdir ~/.config && mv ~/.ssh ~/.config/ssh && ln -s .config/ssh ~/.ssh
-  - touch ~/.ssh/config && chmod 644 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+  - mkdir -p ~/.config && mv ~/.ssh ~/.config/ssh && ln -s .config/ssh ~/.ssh
+  - touch ~/.ssh/config && chmod 666 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
   - true && ! ssh -p 4848 root@localhost true
   - ansible-playbook tests/test.yml -i tests/inventory
   - ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
