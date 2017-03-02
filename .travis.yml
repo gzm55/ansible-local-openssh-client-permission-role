@@ -42,6 +42,8 @@ install:
   - ssh -p 4848 root@localhost true
 
 script:
+  - set -e
+
   # Basic role syntax check
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
 
