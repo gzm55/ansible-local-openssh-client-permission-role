@@ -24,7 +24,7 @@
   - ansible_become: False
   - ansible_become_user: "{{ ansible_user | d(lookup('id', 'euname'), True) }}"
   when:
-  - ([ hostvars[inventory_hostname].ansible_connection | d('smart') ]) | intersect(['ssh', 'smart']) | list | length == 1
+  - ([ hostvars[inventory_hostname].ansible_connection | d('smart') ]) | intersect(['ssh', 'smart', 'paramiko']) | list | length == 1
   - ( '~/.ssh' | expanduser | exists )
   - ( '~/.ssh' | expanduser | realpath | exists )
   - ( '~/.ssh' | expanduser | realpath | is_dir )
