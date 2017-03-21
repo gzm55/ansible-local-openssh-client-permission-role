@@ -16,7 +16,7 @@ addons:
 
 install:
   # Install ansible
-  - pip install ansible
+  - pip install ansible ansible-lint
 
   # Check ansible version
   - ansible --version
@@ -46,6 +46,8 @@ script:
 
   # Basic role syntax check
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  - ansible-lint .
+  - ansible-lint tests/test.yml
 
   # invalid mode for ~/.ssh/config
   - touch ~/.ssh/config && chmod 666 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/

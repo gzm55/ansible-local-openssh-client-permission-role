@@ -1,1 +1,2 @@
 testserver ansible_host=localhost ansible_port=4848 ansible_ssh_pipelining=True ansible_user=root
+testdocker ansible_connection=docker
