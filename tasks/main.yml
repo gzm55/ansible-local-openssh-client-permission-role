@@ -1,5 +1,13 @@
 ---
 - block:
+  - name: stat $HOME
+    stat:
+      path: "{{ ~ | expanduser | realpath }}"
+      follow: True
+    register: home_stat
+  - name: $HOME should be owned by the invoking user (sudo -H to the other user)
+    assert:
+      that: "home_stat.stat.exists == False or home_stat.stat.isuid"
   - name: ~/.ssh/ should be mode 0700
     file:
       path: "{{ '~/.ssh' | expanduser | realpath }}"
