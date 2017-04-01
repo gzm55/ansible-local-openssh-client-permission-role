@@ -51,10 +51,6 @@ script:
 
   # invalid mode for ~/.ssh/config
   - touch ~/.ssh/config && chmod 666 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
-  - id
-  - whoami
-  - users
-  - set
   - true && ! ssh -p 4848 root@localhost true
   - ansible-playbook tests/test.yml -i tests/inventory
   - ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
