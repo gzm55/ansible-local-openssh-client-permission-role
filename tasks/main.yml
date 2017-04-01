@@ -2,7 +2,7 @@
 - block:
   - name: stat $HOME
     stat:
-      path: "{{ ~ | expanduser | realpath }}"
+      path: "{{ '~' | expanduser | realpath }}"
       follow: True
     register: home_stat
   - name: $HOME should be owned by the invoking user (sudo -H to the other user)
