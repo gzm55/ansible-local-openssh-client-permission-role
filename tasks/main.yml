@@ -7,7 +7,7 @@
     register: home_stat
   - name: $HOME should be owned by the invoking user (sudo -H to the other user)
     assert:
-      that: "home_stat.stat.exists == False or home_stat.stat.uid == lookup('id', 'uid')"
+      that: "not home_stat.stat.exists or home_stat.stat.uid == lookup('id', 'uid')"
   - name: ~/.ssh/ should be mode 0700
     file:
       path: "{{ '~/.ssh' | expanduser | realpath }}"
@@ -50,7 +50,7 @@
                    | d(ansible_user))
          | d(lookup('id', 'euname'), True) }}
   when:
-  - ([ hostvars[inventory_hostname].ansible_connection | d('smart') ]) | intersect(['ssh', 'smart', 'paramiko']) | list | length == 1
+  - ([ hostvars[inventory_hostname].ansible_connection | d('smart') ]) | intersect(['ssh', 'smart', 'paramiko'])
   - ( '~/.ssh' | expanduser | exists )
   - ( '~/.ssh' | expanduser | realpath | exists )
   - ( '~/.ssh' | expanduser | realpath | is_dir )
