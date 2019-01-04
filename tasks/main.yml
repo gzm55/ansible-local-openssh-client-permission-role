@@ -9,9 +9,9 @@
   when:
   - ([ hostvars[inventory_hostname].ansible_connection | d('smart') ])
     | intersect(['ssh', 'smart', 'paramiko', 'persistent'])
-  - '~/.ssh' | expanduser is exists
-  - '~/.ssh' | expanduser | realpath is exists
-  - '~/.ssh' | expanduser | realpath is is_dir
+  - ( '~/.ssh' | expanduser is exists )
+  - ( '~/.ssh' | expanduser | realpath is exists )
+  - ( '~/.ssh' | expanduser | realpath is is_dir )
 
   block:
   - name: stat $HOME
@@ -32,9 +32,9 @@
 
   - name: ~/.ssh/config must be mode 0600
     when:
-    - '~/.ssh/config' | expanduser is exists
-    - '~/.ssh/config' | expanduser | realpath is exists
-    - '~/.ssh/config' | expanduser | realpath is is_file
+    - ( '~/.ssh/config' | expanduser is exists )
+    - ( '~/.ssh/config' | expanduser | realpath is exists )
+    - ( '~/.ssh/config' | expanduser | realpath is is_file )
     file:
       path: "{{ '~/.ssh/config' | expanduser | realpath }}"
       owner: "{{ lookup('id', 'euname') }}"
