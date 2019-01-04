@@ -1,4 +1,4 @@
-local_openssh_client_permission (0.0.2-dev)
+local_openssh_client_permission (0.0.2)
 ===========================================
 
 Fix permissions of local openssh client config files, see the manual of openssh: http://man.openbsd.org/ssh
@@ -30,7 +30,7 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - { role: gzm55.local_openssh_client_permission }
+         - role: gzm55.local_openssh_client_permission
 
 License
 -------
