@@ -9,12 +9,12 @@
   when:
   - (hostvars[inventory_hostname].ansible_connection | d('smart'))
     in ['ssh', 'smart', 'paramiko', 'persistent']
-  - '~' | expanduser is exists
-  - '~' | expanduser | realpath is exists
-  - '~' | expanduser | realpath is is_dir
-  - '~/.ssh' | expanduser is exists
-  - '~/.ssh' | expanduser | realpath is exists
-  - '~/.ssh' | expanduser | realpath is is_dir
+  - ( '~' | expanduser is exists )
+  - ( '~' | expanduser | realpath is exists )
+  - ( '~' | expanduser | realpath is is_dir )
+  - ( '~/.ssh' | expanduser is exists )
+  - ( '~/.ssh' | expanduser | realpath is exists )
+  - ( '~/.ssh' | expanduser | realpath is is_dir )
 
   block:
   - name: $HOME should be owned by the invoking user (sudo -H to the other user)
