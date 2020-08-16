@@ -7,22 +7,22 @@
   - ansible_become: False
   - ansible_become_user: "{{ lookup('id', 'uname') }}"
   when:
-  - ([ hostvars[inventory_hostname].ansible_connection | d('smart') ])
-    | intersect(['ssh', 'smart', 'paramiko', 'persistent'])
-  - ( '~/.ssh' | expanduser is exists )
-  - ( '~/.ssh' | expanduser | realpath is exists )
-  - ( '~/.ssh' | expanduser | realpath is is_dir )
+  - (hostvars[inventory_hostname].ansible_connection | d('smart'))
+    in ['ssh', 'smart', 'paramiko', 'persistent']
+  - '~' | expanduser is exists
+  - '~' | expanduser | realpath is exists
+  - '~' | expanduser | realpath is is_dir
+  - '~/.ssh' | expanduser is exists
+  - '~/.ssh' | expanduser | realpath is exists
+  - '~/.ssh' | expanduser | realpath is is_dir
 
   block:
-  - name: stat $HOME
+  - name: $HOME should be owned by the invoking user (sudo -H to the other user)
     stat:
       path: "{{ '~' | expanduser | realpath }}"
       follow: True
     register: home_stat
-
-  - name: $HOME should be owned by the invoking user (sudo -H to the other user)
-    assert:
-      that: "not home_stat.stat.exists or home_stat.stat.uid == lookup('id', 'uid')"
+    failed_when: home_stat.stat.uid != lookup('id', 'uid')
 
   - name: ~/.ssh/ should be mode 0700
     file:
@@ -31,10 +31,6 @@
       mode: 'u=rwx,g=,o='
 
   - name: ~/.ssh/config must be mode 0600
-    when:
-    - ( '~/.ssh/config' | expanduser is exists )
-    - ( '~/.ssh/config' | expanduser | realpath is exists )
-    - ( '~/.ssh/config' | expanduser | realpath is is_file )
     file:
       path: "{{ '~/.ssh/config' | expanduser | realpath }}"
       owner: "{{ lookup('id', 'euname') }}"
