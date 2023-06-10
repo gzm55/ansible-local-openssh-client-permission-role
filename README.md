@@ -1,4 +1,4 @@
-local_openssh_client_permission (2.0.0)
+local_openssh_client_permission (2.0.1-dev)
 ===========================================
 
 Fix permissions of local openssh client config files, see the manual of openssh: http://man.openbsd.org/ssh
