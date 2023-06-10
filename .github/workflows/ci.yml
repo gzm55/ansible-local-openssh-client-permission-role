@@ -25,6 +25,11 @@ jobs:
         set -x
         pip3 install -r requirements.txt
         ansible-galaxy install -p tests/roles -r requirements.yml
+
+        # Start a sshd container for testing
+        # - listen on localhost:4848
+        # - enable root login
+        # - root login via pubkey
         docker pull danielguerra/alpine-sshd
         docker rm -f alpine-sshd || true
         docker run -p 4848:22 --name alpine-sshd --hostname alpine-sshd -d danielguerra/alpine-sshd sh -c 'echo -e "PermitRootLogin yes\nPasswordAuthentication no\n" >> /etc/ssh/sshd_config && exec /usr/sbin/sshd -D'
@@ -38,12 +43,34 @@ jobs:
     - name: syntax check
       run: ansible-playbook tests/test.yml -i tests/inventory --syntax-check
 
-    # Start a sshd container for testing
-    # - listen on localhost:4848
-    # - enable root login
-    # - root login via pubkey
-    - name: perform checking
-      run: echo TODO && false
+    - name: invalid mode for ~/.ssh/config
+      run: |
+        touch ~/.ssh/config && chmod 666 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+        true && ! ssh -p 4848 root@localhost true
+        ansible-playbook tests/test.yml -i tests/inventory
+        ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+        ssh -p 4848 root@localhost true
+
+    - name: invalid mode for ~/.ssh
+      run: |
+        chmod 755 ~/.ssh && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+        ansible-playbook tests/test.yml -i tests/inventory
+        ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+        ssh -p 4848 root@localhost true
+
+    - name: reference
+      run: |
+        mkdir -p ~/.config && mv ~/.ssh ~/.config/ssh && ln -s .config/ssh ~/.ssh
+        touch ~/.ssh/config && chmod 622 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+        true && ! ssh -p 4848 root@localhost true
+        ansible-playbook tests/test.yml -i tests/inventory
+        ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
+        ssh -p 4848 root@localhost true
+
+    - name: no ~/.ssh dir
+      run: |
+        rm -rf ~/.ssh
+        ansible-playbook tests/test.yml -i tests/inventory
 
   lint-job:
     name: lint codes

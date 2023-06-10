@@ -1,4 +1,4 @@
-local_openssh_client_permission (1.0.3-dev)
+local_openssh_client_permission (2.0.0-dev)
 ===========================================
 
 Fix permissions of local openssh client config files, see the manual of openssh: http://man.openbsd.org/ssh
@@ -10,8 +10,10 @@ Requirements
 ------------
 
 Python modules:
-- andible>=2.0
+- andible>=2.8
 - jinja2>=2.6
+
+For `ansible<2.8`, use version 1.0.2.
 
 Role Variables
 --------------
