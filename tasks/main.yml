@@ -1,11 +1,11 @@
 ---
-- name: fix ~/.ssh dir permission
+- name: Fix ~/.ssh dir permission
 
   run_once: True
   delegate_to: localhost
   vars:
-  - ansible_become: False
-  - ansible_become_user: "{{ lookup('id', 'uname') }}"
+    ansible_become: False
+    ansible_become_user: "{{ lookup('id', 'uname') }}"
   when:
   - (hostvars[inventory_hostname].ansible_connection | d('smart'))
     in ['ssh', 'smart', 'paramiko', 'persistent']

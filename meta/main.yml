@@ -1,24 +1,22 @@
 galaxy_info:
+  role_name: local_openssh_client_permission
+  namespace: gzm55
   author: James Z.M. Gao
   description: fix permissions of local openssh client config files
 
   license: BSD
 
-  min_ansible_version: 2.0
+  min_ansible_version: "2.8"
 
   platforms:
   - name: GenericBSD
-    versions:
-    - any
+    versions: [all]
   - name: GenericLinux
-    versions:
-    - any
+    versions: [all]
   - name: Windows
-    versions:
-    - all
+    versions: [all]
   - name: GenericUNIX
-    versions:
-    - any
+    versions: [all]
 
   galaxy_tags: [system, network]
 
@@ -29,4 +27,4 @@ dependencies:
 - role: gzm55.local_id_plugin
   version: master
 - role: gzm55.require_disabe_become
-  version: "1.0.1"
+  version: "2.0.0"
