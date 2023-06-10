@@ -18,20 +18,20 @@
 
   block:
   - name: $HOME should be owned by the invoking user (sudo -H to the other user)
-    stat:
+    ansible.builtin.stat:
       path: "{{ '~' | expanduser | realpath }}"
       follow: True
     register: home_stat
     failed_when: home_stat.stat.uid != lookup('id', 'uid')
 
   - name: ~/.ssh/ should be mode 0700
-    file:
+    ansible.builtin.file:
       path: "{{ '~/.ssh' | expanduser | realpath }}"
       owner: "{{ lookup('id', 'euname') }}"
       mode: 'u=rwx,g=,o='
 
   - name: ~/.ssh/config must be mode 0600
-    file:
+    ansible.builtin.file:
       path: "{{ '~/.ssh/config' | expanduser | realpath }}"
       owner: "{{ lookup('id', 'euname') }}"
       mode: 'u=rw,g=,o='
