@@ -45,6 +45,7 @@ jobs:
 
     - name: invalid mode for ~/.ssh/config
       run: |
+        set -x
         touch ~/.ssh/config && chmod 666 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
         true && ! ssh -p 4848 root@localhost true
         ansible-playbook tests/test.yml -i tests/inventory
@@ -53,6 +54,7 @@ jobs:
 
     - name: invalid mode for ~/.ssh
       run: |
+        set -x
         chmod 755 ~/.ssh && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
         ansible-playbook tests/test.yml -i tests/inventory
         ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
@@ -60,6 +62,7 @@ jobs:
 
     - name: reference
       run: |
+        set -x
         mkdir -p ~/.config && mv ~/.ssh ~/.config/ssh && ln -s .config/ssh ~/.ssh
         touch ~/.ssh/config && chmod 622 ~/.ssh/config && ls -alhd ~/.ssh/ && ls -alh ~/.ssh ~/.ssh/
         true && ! ssh -p 4848 root@localhost true
@@ -69,6 +72,7 @@ jobs:
 
     - name: no ~/.ssh dir
       run: |
+        set -x
         rm -rf ~/.ssh
         ansible-playbook tests/test.yml -i tests/inventory
 
