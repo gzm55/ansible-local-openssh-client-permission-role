@@ -76,6 +76,13 @@ jobs:
         rm -rf ~/.ssh
         ansible-playbook tests/test.yml -i tests/inventory
 
+    - name: no ~/.ssh/config
+      run: |
+        set -x
+        rm -rf ~/.ssh
+        mkdir -p ~/.ssh
+        ansible-playbook tests/test.yml -i tests/inventory
+
   lint-job:
     name: lint codes
     runs-on: ubuntu-22.04
