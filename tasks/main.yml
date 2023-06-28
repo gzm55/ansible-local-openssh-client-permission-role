@@ -30,7 +30,9 @@
       owner: "{{ lookup('id', 'euname') }}"
       mode: 'u=rwx,g=,o='
 
-  - name: ~/.ssh/config must be mode 0600
+  - name: ~/.ssh/config must be mode 0600 if exists
+    when:
+    - ( '~/.ssh/config' | expanduser | realpath is exists )
     ansible.builtin.file:
       path: "{{ '~/.ssh/config' | expanduser | realpath }}"
       owner: "{{ lookup('id', 'euname') }}"
